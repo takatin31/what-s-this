@@ -64,7 +64,9 @@ UploadPic = () => {
       storageOptions: {
           skipBackup: true,
           path: 'images',
-      }
+      },
+      maxWidth: 512,
+      maxHeight: 512,
   };
       // prendre une nouvelle photo (depuis la caméra ou la gallerie)
   ImagePicker.launchCamera(options, (response) => {
@@ -86,12 +88,12 @@ UploadPic = () => {
               name: response.fileName
           });
           
+          
           const source = response.uri;
           
           this.setState({uri: source});
           //this.setState({page: 2})
           this.uploadImage(source);
-         
       }
   }
   )
@@ -103,36 +105,33 @@ page2Press = () => {
     if(delta < 200) {
       // double tap happend
       clearInterval(this.state.timer); // arreter le compteur
-
+      //------------------------------------------------------------------------------> 
     }else{
-      let timer = setInterval(this.tick, 200); // initialiser la variable timer et lacer le compteur
+      let timer = setInterval(this.tick1, 200); // initialiser la variable timer et lacer le compteur
       this.setState({timer}); // stocker la variable dans 'State'
     }
 
     this.setState({
       lastPress: new Date().getTime()
     })
-
-    
-
-    
 }
 
-tick =() => { // chaque tick d'horloge
+
+
+tick1 =() => { // chaque tick d'horloge
 
     this.setState({// incrémenter le compteur
       counter: this.state.counter + 1
     });
 
     if (this.state.counter == 1){ // si le temps d'affichage de cette interface est écoulé
-
-      
       clearInterval(this.state.timer); // arreter le compteur
       this.setState({page: 1});
-
     }
 
   }
+
+
 
 
 
@@ -182,23 +181,6 @@ tick =() => { // chaque tick d'horloge
 
           </View>
         </TouchableWithoutFeedback>
-      )
-    }else{
-      return(
-            <TouchableOpacity style={styles.centeredViewStyle} onPress={this.page3Press}>
-                  <View  style={{justifyContent: 'center'}}>
-                    <Image source={require('../images/teamwork.png')}
-                    style={{width: 120, height: 100}}/>
-                  </View>
-
-                  <View style={{marginTop: -50}}>
-                    <Text style={styles.middleTextstyle}>
-                      - You can ask other people about it.
-                      - People can help You.
-                    </Text>
-                  </View>
-            </TouchableOpacity>
-
       )
     }
   }

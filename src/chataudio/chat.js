@@ -23,6 +23,8 @@ import  firebase  from "react-native-firebase";
 
 import  ImagePicker from 'react-native-image-picker'
 
+
+
 export default class Chat extends Component {
     static propTypes = {
         user: propTypes.object,
@@ -200,8 +202,10 @@ export default class Chat extends Component {
                 startAudio: true
             });
             await AudioRecorder.startRecording();
+            
         } else {
-            this.setState({ startAudio: false });
+            this.setState({startAudio: false});
+            console.log(this.state.startAudio);
             await AudioRecorder.stopRecording();
             const { audioPath } = this.state;
             const fileName = `${this.messageIdGenerator()}.aac`;
@@ -213,12 +217,8 @@ export default class Chat extends Component {
             console.log(file)
             firebase.storage().ref('files').child(fileName).putFile(file.uri)
                 .then(response => {
-                    console.log(response, "response from rns3 audio");
-                    if (response.status !== 201) {
-                        alert("Something went wrong, and the audio was not uploaded.");
-                        console.error(response.body);
-                        return;
-                    }
+                    console.log(response.downloadURL, "response from rns3 audio");
+                    
                     const message = {};
                     message._id = this.messageIdGenerator();
                     message.createdAt = Date.now();
@@ -228,7 +228,7 @@ export default class Chat extends Component {
                         avatar: user.avatar
                     };
                     message.text = "";
-                    message.audio = response.headers.Location;
+                    message.audio = response.downloadURL;
                     message.messageType = "audio";
 
                     this.chatsFromFB.update({
@@ -294,7 +294,7 @@ export default class Chat extends Component {
                             name: `${user.firstName} ${user.lastName}`,
                             avatar: user.avatar
                         };
-                        message.image = response.headers.Location;
+                        message.image = response.downloadURL;
                         message.messageType = "image";
 
                         this.chatsFromFB.update({
