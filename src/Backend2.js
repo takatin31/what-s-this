@@ -15,6 +15,8 @@ class Backend {
         });
       }
     });
+
+    firebase.database().ref('Blinds/').push(this.getUid());
   }
   setUid(value) {
     this.uid = value;

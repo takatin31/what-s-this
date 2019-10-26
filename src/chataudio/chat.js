@@ -9,7 +9,9 @@ import {
     Dimensions,
     ActivityIndicator,
     Alert,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
+    Image
 } from "react-native";
 
 import { AudioRecorder, AudioUtils } from "react-native-audio";
@@ -151,37 +153,26 @@ export default class Chat extends Component {
         return !props.currentMessage.audio ? (
             <View />
         ) : (
-                <Ionicons
-                    name="ios-play"
-                    size={35}
-                    color={this.state.playAudio ? "red" : "blue"}
-                    style={{
-                        left: 90,
-                        position: "relative",
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 0 },
-                        shadowOpacity: 0.5,
-                        backgroundColor: "transparent"
-                    }}
-                    onPress={() => {
-                        this.setState({
-                            playAudio: true
-                        });
-                        const sound = new Sound(props.currentMessage.audio, "", error => {
-                            if (error) {
-                                console.log("failed to load the sound", error);
-                            }
-                            this.setState({ playAudio: false });
-                            sound.play(success => {
-                                console.log(success, "success play");
-                                if (!success) {
-                                    Alert.alert("There was an error playing this audio");
-                                }
-                            });
-                        });
-                    }}
-                />
-            );
+            <TouchableWithoutFeedback onPress={() => {
+                this.setState({
+                    playAudio: true
+                });
+                const sound = new Sound(props.currentMessage.audio, "", error => {
+                    if (error) {
+                        console.log("failed to load the sound", error);
+                    }
+                    this.setState({ playAudio: false });
+                    sound.play(success => {
+                        console.log(success, "success play");
+                        if (!success) {
+                            Alert.alert("There was an error playing this audio");
+                        }
+                    });
+                });
+            }}>
+                <Image style={{width: 30, height: 30}} source={require("../images/iconfinder_play-circle-fill_326581.png")}/>
+            </TouchableWithoutFeedback>
+        )
     };
     renderBubble = props => {
         return (
@@ -307,26 +298,39 @@ export default class Chat extends Component {
             }
         });
     };
+    renderMicrophone(){
+        if(this.state.startAudio){
+            return (
+               
+                    <Image source={require("../images/1.png")}
+                    />
+                
+                
+            )
+        }else{
+            return (
+                <Image source={require("../images/2.png")}/>
+            )
+        }
+    }
     renderAndroidMicrophone() {
         if (Platform.OS === "android") {
             return (
-                <Ionicons
-                    name="ios-mic"
-                    size={35}
-                    hitSlop={{ top: 20, bottom: 20, left: 50, right: 50 }}
-                    color={this.state.startAudio ? "red" : "black"}
-                    style={{
-                        bottom: 50,
-                        right: Dimensions.get("window").width / 2,
-                        position: "absolute",
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 0 },
-                        shadowOpacity: 0.5,
-                        zIndex: 2,
-                        backgroundColor: "transparent"
-                    }}
-                    onPress={this.handleAudio}
-                />
+                <View style={{width: "100%", justifyContent: "center", alignItems: "center", marginBottom: 10}}>
+                <TouchableWithoutFeedback onPress={this.handleAudio} 
+                style={{
+                    alignContent: "center",
+                    marginTop: Dimensions.get("window").height / 2,
+
+                    alignSelf: 'center',
+                    bottom: 0,
+                    marginLeft: 100,
+                    justifyContent: 'center'
+                }}
+                >
+                    {this.renderMicrophone()}
+                </TouchableWithoutFeedback>
+            </View>
             );
         }
     }
@@ -338,6 +342,10 @@ export default class Chat extends Component {
                 </View>
             );
         }
+    }
+
+    renderInputToolbar(props) {
+        return ( <View></View>);
     }
 
 
@@ -355,7 +363,7 @@ export default class Chat extends Component {
                     rightButton={rightButtonConfig}
                 />
                 {this.renderLoading()}
-                {this.renderAndroidMicrophone()}
+                
                 <GiftedChat
                     messages={this.state.messages}
                     onSend={messages => this.onSend(messages)}
@@ -365,6 +373,7 @@ export default class Chat extends Component {
                     showAvatarForEveryMessage
                     renderBubble={this.renderBubble}
                     messageIdGenerator={this.messageIdGenerator}
+                    renderInputToolbar={this.renderInputToolbar.bind(this)}
                     onPressAvatar={this.handleAvatarPress}
                     renderActions={() => {
                         if (Platform.OS === "ios") {
@@ -395,6 +404,7 @@ export default class Chat extends Component {
                         avatar: user.avatar
                     }}
                 />
+                {this.renderAndroidMicrophone()}
                 <KeyboardAvoidingView />
             </View>
         );

@@ -145,11 +145,9 @@ tick1 =() => { // chaque tick d'horloge
                     style={{width: 120, height: 100}}/>
                   </View>
 
-                  <View style={{marginTop: -50}}>
+                  <View style={{marginTop: -50, paddingLeft: 10, paddingRight: 10}}>
                     <Text style={styles.middleTextstyle}>
-                      - Please click on the Camera to take a picture.{"\n"}
-                      - Image classification will be automaticlly activated.{"\n"}
-                      - Result will be shown.
+                      Please tap on the Camera to take a picture
                     </Text>
                   </View>
             </TouchableOpacity>
@@ -193,11 +191,11 @@ tick1 =() => { // chaque tick d'horloge
 
       <View style={styles.viewStyle}>
 
-        <View style={styles.headerView}>
+        {/* <View style={styles.headerView}>
           <Text style={styles.titleView}>
             Offline Mode
           </Text>
-        </View>
+        </View> */}
         <View style={styles.middleViewStyle}>
           {this.renderDetails()}
         </View>
@@ -244,6 +242,6 @@ const styles = StyleSheet.create({
   middleTextstyle:{
     textAlign: 'center',
     color: '#ffffff90',
-    fontSize: 18
+    fontSize: 23.5
   }
 });
